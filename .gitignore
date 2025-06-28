@@ -1,3 +1,10 @@
+# large or local-only stuff
 data/
+*.duckdb
+
+# notebook cruft
+*.ipynb_checkpoints/
+
+# python artefacts
 __pycache__/
-*.ipynb_checkpoints/ git add .gitignore git commit -m chore: add gitignore
+*.py[cod]
