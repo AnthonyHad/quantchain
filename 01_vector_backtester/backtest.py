@@ -3,15 +3,21 @@ Vectorised SMA Crossover Back-test
 Run:  python 01_vector_backtester/backtest.py
 """
 
+
+import matplotlib.pyplot as plt
 from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
 import pandas as pd
+
 from utils.indicators import sma, ema   # we’ll use SMA first
 
 # --------- parameters you can tweak -----------
 FAST = 20      # “fast” SMA days
 SLOW = 50      # “slow” SMA days
 ASSETS = ("btc", "eth")
-DATA_DIR = Path("../data")
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 # ----------------------------------------------
 
 def load_price(asset: str) -> pd.DataFrame:
@@ -47,4 +53,6 @@ if __name__ == "__main__":
         res  = run_backtest(df)
 
         final = res["equity"].iloc[-1]
+        res["equity"].plot(title=f"{asset.upper()} SMA {FAST}/{SLOW}")
+        plt.savefig(f"01_vector_backtester/{asset}_equity.png")
         print(f"{asset.upper():<3} final equity: {final:.2f}×")
