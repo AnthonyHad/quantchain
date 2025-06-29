@@ -44,15 +44,27 @@ def run_backtest(df: pd.DataFrame) -> pd.DataFrame:
     # cumulative product gives equity curve (start at 1.0)
     df["equity"] = (1 + df["strat"]).cumprod()
 
+    # also compute buy‐and‐hold equity curve
+    df["hold_eq"] = (1 + df["ret"]).cumprod()
+
     return df
 
 # -------------- script entry point -------------
 if __name__ == "__main__":
     for asset in ASSETS:
+        plt.figure()
         df   = load_price(asset)
         res  = run_backtest(df)
 
         final = res["equity"].iloc[-1]
-        res["equity"].plot(title=f"{asset.upper()} SMA {FAST}/{SLOW}")
+        # Plot buy‐and‐hold vs SMA‐crossover equity
+        eq_df = res[["hold_eq", "equity"]]
+        ax = eq_df.plot(
+            title   = f"{asset.upper()} SMA {FAST}/{SLOW}",
+            color   = ["blue", "orange"]   # hold_eq in blue, equity in orange
+        )
+        ax.legend(["Buy & Hold", "SMA Crossover"])
+        ax.set_ylabel("Growth Factor")
         plt.savefig(f"01_vector_backtester/{asset}_equity.png")
+        plt.close()
         print(f"{asset.upper():<3} final equity: {final:.2f}×")
