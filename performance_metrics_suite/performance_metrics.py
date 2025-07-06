@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def simple_returns(equity: pd.Series) -> pd.Series:
     """
@@ -33,3 +34,21 @@ def max_drawdown(equity: pd.Series) -> float:
     # Drawdown at each point
     drawdowns = equity / running_max - 1
     return drawdowns.min()
+
+
+
+
+def plot_drawdown(equity, title=None, save_path=None):
+    """Plots the drawdown curve and (optionally) saves to file."""
+    running_max = equity.cummax()
+    drawdown = equity / running_max - 1
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(drawdown, color="red")
+    plt.title(title or "Drawdown Curve")
+    plt.ylabel("Drawdown")
+    plt.xlabel("Time")
+    plt.grid(True, alpha=0.3)
+    if save_path:
+        plt.savefig(save_path)
+    plt.show()

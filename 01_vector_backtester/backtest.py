@@ -14,7 +14,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from utils.indicators import sma, ema   # we’ll use SMA first
 from performance_metrics_suite.data_utils import load_raw_equity, validate_equity_curve
-from performance_metrics_suite.performance_metrics import simple_returns, sharpe_ratio, max_drawdown
+from performance_metrics_suite.performance_metrics import simple_returns, sharpe_ratio, max_drawdown, plot_drawdown
 
 # --------- parameters you can tweak -----------
 FAST = 20      # “fast” SMA days
@@ -66,6 +66,7 @@ if __name__ == "__main__":
         eq = res["equity"]
         validate_equity_curve(eq)
         rts = simple_returns(eq)
+        plot_drawdown(eq, title=f"{asset.upper()} Drawdown", save_path=f"01_vector_backtester/{asset}_drawdown.png")
         print(f"{asset.upper()} Sharpe: {sharpe_ratio(rts, rf_rate=0.05):.2f}")
         print(f"{asset.upper()} Max drawdown: {max_drawdown(eq):.2%}")
         # ——————————————————————————————
@@ -81,4 +82,5 @@ if __name__ == "__main__":
         ax.set_ylabel("Growth Factor")
         plt.savefig(f"01_vector_backtester/{asset}_equity.png")
         plt.close()
-        print(f"{asset.upper():<3} final equity: {final:.2f}×")
+        print(f"{asset.upper()} final equity: {final:.2f}×")
+
